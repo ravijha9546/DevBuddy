@@ -4,7 +4,7 @@ const userAuth = (req,res,next)=>{
     if(isUserAuth){
         next();
     }else{
-        res.status(401).send("Unauth access");
+        res.status(401).send("Unauth Access");
     }
 
 }
