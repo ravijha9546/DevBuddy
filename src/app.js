@@ -1,32 +1,38 @@
 const express = require('express')
 const app = express();
-const { userAuth } = require("./middlewares/auth")
+//const { userAuth } = require("./middlewares/auth")
+const connectDB=require("./config/dbconnct")
+const PORT = process.env.PORT || 3001;
+const User = require("./models/user");
+app.use(express.json());
 
 
+app.post("/signup",async (req,res)=>{
+    const newuser = new User(req.body);
 
-
-app.get("/user/getUserData",userAuth,(req,res)=>{
     try{
-        //throw new error;
-        res.send("All data sent"); 
+        await newuser.save();
+        res.send("User added successfully");
     }catch(err){
-        res.status(500).send("Something went wrong");
-    }        
-});
-app.delete('/user/deleteUSer',userAuth,(req,res)=>{
-    try{
-        res.send("User deleted");
-    }catch(err){
-        res.status(500).send("Something went wrong");
+        res.status(400).send("Erorr adding user"+err.message);
     }
-    
-});
-app.use("/",(err,req,res,next)=>{
-    res.status(500).send("Something went wrong. Contact Support");
+
 })
 
-const PORT = process.env.PORT || 3001;
+connectDB().then(()=>{
+    console.log("Database connection established");
+    app.listen(PORT, ()=>{
+        console.log("Server is running");
+        });
+}).catch(err=>{
+    console.error("Databse not established");
 
-app.listen(PORT, ()=>{
-console.log("Server is running");
 });
+
+
+
+
+
+
+
+
