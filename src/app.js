@@ -6,20 +6,39 @@ const PORT = process.env.PORT || 3001;
 const User = require("./models/user");
 app.use(express.json());
 const {ValidateSignUpData} = require("./utils/validation")
+const bcrypt = require("bcrypt")
+
+
+
 
 
 app.post("/signup",async (req,res)=>{
 
-    //validatig the data
+    
      try{
 
         ValidateSignUpData(req);
 
     //encrypt the password
+    
+    const {firstName, lastName, emailId, password,age} = req.body;
+    const hashpassword = await bcrypt.hash(password,10);
+    
+    console.log(hashpassword);
+
+
 
 
     //creating an instance of the user model
-    const newuser = new User(req.body);
+    const newuser = new User({
+        firstName,
+        lastName,
+        emailId,
+        password:hashpassword,
+        age,
+    });
+    
+
 
     
         await newuser.save();
@@ -28,7 +47,8 @@ app.post("/signup",async (req,res)=>{
         res.status(400).send("Erorr : "+err.message);
     }
 
-})
+});
+
 app.patch("/user",async(req,res)=>{
     const userId = req.body.userId;
     const data = req.body;
