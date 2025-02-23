@@ -14,8 +14,6 @@ const validator = require("validator");
 
 
 app.post("/signup",async (req,res)=>{
-
-    
      try{
 
         ValidateSignUpData(req);
@@ -58,13 +56,13 @@ app.post("/login",async(req,res)=>{
         };
         const user = await User.findOne({emailId: emailId});
         if(!user){
-            throw new Error("User is not registered");
+            throw new Error("Invalid Credentials");
         } 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(isPasswordValid){
             res.status(200).send("Login Successfull");
         }else{
-            throw new Error("Password is not correct");
+            throw new Error("Inavlid Credentials");
         }
         
 
